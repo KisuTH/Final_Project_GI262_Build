@@ -15,6 +15,7 @@ namespace ColorShiftKnight.Gameplay
     {
         private const int Size = BoardConfig.Size;
         private const int CellCount = BoardConfig.CellCount;
+        private const float PanelX = 710f;   // centre of the side panel, to the right of the centred board
 
         private static readonly Color ButtonFallback = new Color(0.15f, 0.20f, 0.28f);
         private static readonly Color PanelFallback = new Color(0.09f, 0.12f, 0.18f);
@@ -35,6 +36,11 @@ namespace ColorShiftKnight.Gameplay
         public Sprite ButtonSprite;
         public Sprite PanelSprite;
 
+        [Header("Hint helper art")]
+        public Sprite[] HintCharacterFrames = new Sprite[2];
+        public Sprite HintFirstPlateSprite;
+        public Sprite HintSecondPlateSprite;
+
         private QuadGraphic[] _cellImages = new QuadGraphic[CellCount];
         private Image[] _cellPieces = new Image[CellCount];
         private Button[] _cellButtons = new Button[CellCount];
@@ -46,8 +52,11 @@ namespace ColorShiftKnight.Gameplay
         private Text _message;
         private Text _overlayTitle;
         private Text _overlayBody;
+        private HintDialogue _hintDialogue;
+        private CellTooltip _tooltip;
         private GameObject _overlay;
         private GameObject _canvasGo;
+        private bool _keepInScene;
 
         private void OnEnable()
         {
@@ -65,6 +74,34 @@ namespace ColorShiftKnight.Gameplay
         private void OnDisable()
         {
             Teardown();
+        }
+
+        // When Play starts, the copy of the UI that is saved in the scene is still there, because the scene is not
+        // fully loaded yet inside OnEnable. Start runs after loading, so the old copy is removed here.
+        private void Start()
+        {
+            GameObject[] roots = gameObject.scene.GetRootGameObjects();
+            for (int i = 0; i < roots.Length; i++)
+            {
+                if (roots[i] != null && roots[i].name == "GameplayCanvas" && roots[i] != _canvasGo)
+                {
+                    DestroyObject(roots[i]);
+                }
+            }
+        }
+
+        // Called from the editor menu "Color-Shift Knight/Show UI In Scene".
+        // Builds the same UI inside the scene itself, so it shows in the Hierarchy and is saved with the scene.
+        // When Play starts, the game removes this copy and builds a fresh one.
+        public void BuildPreview()
+        {
+            Teardown();
+            _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            _keepInScene = true;
+            BuildUi();
+            _keepInScene = false;
+            _game = new GameCore(Environment.TickCount);
+            NewLevel();
         }
 
         // The UI is built from code every time the game starts, so it is removed here first.
@@ -143,7 +180,7 @@ namespace ColorShiftKnight.Gameplay
                 art.raycastTarget = false;
             }
 
-            // 36 clickable squares placed on the painted squares. Row 0 is the top row (Goal F6 is top-right).
+            // 36 clickable squares placed on the painted squares. Row 0 is the top row (Goal F1 is top-right).
             Vector2[] centers = new Vector2[CellCount];
             for (int i = 0; i < CellCount; i++)
             {
@@ -190,21 +227,39 @@ namespace ColorShiftKnight.Gameplay
                 _cellPieces[i] = pieceImg;
             }
 
+            // Column letters and row numbers around the board
+            BoardLabels.Build(root, _font);
+
+            // Name of the square under the mouse
+            _tooltip = new CellTooltip();
+            _tooltip.Build(root, ButtonSprite, _font);
+            for (int i = 0; i < CellCount; i++)
+            {
+                CellHover hover = _cellImages[i].gameObject.AddComponent<CellHover>();
+                Vector2 tipPosition = new Vector2(centers[i].x, centers[i].y + _cellSize[i].y * 0.5f + 34f);
+                hover.Setup(_tooltip, Position.NameOf(i), tipPosition);
+            }
+
             // Side panel
-            Image hudPlate = MakeImage("HudPlate", root, new Vector2(330, 250), new Vector2(440, 240), PanelSprite, PanelFallback);
+            Image hudPlate = MakeImage("HudPlate", root, new Vector2(PanelX, 250), new Vector2(440, 240), PanelSprite, PanelFallback);
             _hud = MakeText("HUD", hudPlate.transform, new Vector2(0, -4), new Vector2(320, 160), 24, TextAnchor.MiddleLeft);
             FitText(_hud, 12, 24);
 
-            Image messagePlate = MakeImage("MessagePlate", root, new Vector2(330, 10), new Vector2(440, 130), PanelSprite, PanelFallback);
+            Image messagePlate = MakeImage("MessagePlate", root, new Vector2(PanelX, 10), new Vector2(440, 130), PanelSprite, PanelFallback);
             _message = MakeText("Message", messagePlate.transform, new Vector2(0, -2), new Vector2(320, 76), 20, TextAnchor.MiddleLeft);
             FitText(_message, 11, 20);
 
-            Button newLevelButton = MakeButton("NewLevelButton", root, new Vector2(330, -110), "New Level");
+            Button newLevelButton = MakeButton("NewLevelButton", root, new Vector2(PanelX, -110), "New Level");
             newLevelButton.onClick.AddListener(OnNewLevelClicked);
-            Button undoButton = MakeButton("UndoButton", root, new Vector2(330, -200), "Undo");
+            Button undoButton = MakeButton("UndoButton", root, new Vector2(PanelX, -200), "Undo");
             undoButton.onClick.AddListener(OnUndo);
-            Button hintButton = MakeButton("HintButton", root, new Vector2(330, -290), "Hint");
+            Button hintButton = MakeButton("HintButton", root, new Vector2(PanelX, -290), "Hint");
             hintButton.onClick.AddListener(OnHint);
+
+            // The hint helper (her sheets are painted at screen size, so she gets the whole canvas)
+            GameObject dialogueGo = NewRect("HintDialogue", root, Vector2.zero, Vector2.zero);
+            _hintDialogue = dialogueGo.AddComponent<HintDialogue>();
+            _hintDialogue.Build(HintCharacterFrames, HintFirstPlateSprite, HintSecondPlateSprite, _font);
 
             // Win screen (created last so it is drawn on top)
             Image overlayImg = NewImage("Overlay", root, Vector2.zero, Vector2.zero);
@@ -219,7 +274,10 @@ namespace ColorShiftKnight.Gameplay
             overlayButton.onClick.AddListener(OnNewLevelClicked);
             _overlay.SetActive(false);
 
-            SetNotSaved(canvasGo.transform);
+            if (_keepInScene == false)
+            {
+                SetNotSaved(canvasGo.transform);
+            }
         }
 
         // Marks an object and all its children so they are not saved into the scene file.
@@ -252,6 +310,7 @@ namespace ColorShiftKnight.Gameplay
         private void NewLevel()
         {
             _overlay.SetActive(false);
+            _hintDialogue.Hide();
             if (_game.StartNewLevel())
             {
                 _message.text = "New level generated. Reach the Relic, capture the King, then reach Goal.";
@@ -285,6 +344,7 @@ namespace ColorShiftKnight.Gameplay
                 return;
             }
 
+            _hintDialogue.Hide();
             int result = _game.TryMove(index);
             _message.text = Describe(result);
 
@@ -297,6 +357,7 @@ namespace ColorShiftKnight.Gameplay
 
         private void OnUndo()
         {
+            _hintDialogue.Hide();
             if (_game.Undo())
             {
                 _message.text = "Undid one move.";
@@ -314,10 +375,13 @@ namespace ColorShiftKnight.Gameplay
             if (hint != null)
             {
                 _message.text = "Hint: go to " + Position.NameOf(hint.NextSquare) + ". Minimum " + hint.RemainingMinMoves + " moves left.";
+                _hintDialogue.Show("Psst... try " + Position.NameOf(hint.NextSquare) + ".",
+                                   "That is the shortest way. " + hint.RemainingMinMoves + " moves left at the least.");
             }
             else
             {
                 _message.text = "No hint available.";
+                _hintDialogue.Show("Hmm...", "I have no hint for you right now.");
             }
             Refresh();
         }

@@ -7,7 +7,7 @@ namespace ColorShiftKnight.Core
         public const int Size = 6;
         public const int CellCount = 36;
         public const int ObstacleCount = 8;
-        public const int Start = 30; // A1 (bottom-left)
-        public const int Goal = 5;   // F6 (top-right)
+        public const int Start = 30; // A6 (bottom-left)
+        public const int Goal = 5;   // F1 (top-right)
     }
 }

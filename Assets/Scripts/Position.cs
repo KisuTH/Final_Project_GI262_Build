@@ -18,12 +18,12 @@ namespace ColorShiftKnight.Core
             return row * BoardConfig.Size + col;
         }
 
-        // Chess-style name, e.g. A1 (bottom-left) and F6 (top-right).
+        // Name of a square, e.g. A1 (top-left) and F6 (bottom-right). Letters go left to right, numbers go top to bottom.
         public static string NameOf(int cell)
         {
             string letters = "ABCDEF";
             string letter = letters.Substring(ColOf(cell), 1);
-            int number = BoardConfig.Size - RowOf(cell);
+            int number = RowOf(cell) + 1;
             return letter + number;
         }
     }
