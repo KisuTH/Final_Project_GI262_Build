@@ -11,6 +11,7 @@ namespace ColorShiftKnight.Core
         public LevelState State;
         public bool IsWon;
         public bool IsLost;
+        public int UndosLeft;
 
         public GameCore(int seed)
         {
@@ -34,6 +35,7 @@ namespace ColorShiftKnight.Core
             history.Clear();
             IsWon = false;
             IsLost = false;
+            UndosLeft = BoardConfig.MaxUndos;
             return true;
         }
 
@@ -102,16 +104,17 @@ namespace ColorShiftKnight.Core
             return result;
         }
 
-        // Allowed after a loss, not after a win.
+        // Allowed after a loss, not after a win. Each level allows only BoardConfig.MaxUndos undos.
         public bool Undo()
         {
-            if (State == null || IsWon || history.CanUndo() == false)
+            if (State == null || IsWon || UndosLeft <= 0 || history.CanUndo() == false)
             {
                 return false;
             }
 
             State = history.Pop();
             IsLost = false;
+            UndosLeft--;
             return true;
         }
 

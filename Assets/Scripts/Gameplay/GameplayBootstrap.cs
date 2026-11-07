@@ -358,9 +358,13 @@ namespace ColorShiftKnight.Gameplay
         private void OnUndo()
         {
             _hintDialogue.Hide();
-            if (_game.Undo())
+            if (_game.UndosLeft <= 0)
             {
-                _message.text = "Undid one move.";
+                _message.text = "No undo left. Each level allows " + BoardConfig.MaxUndos + ".";
+            }
+            else if (_game.Undo())
+            {
+                _message.text = "Undid one move. " + _game.UndosLeft + " undo left.";
             }
             else
             {
