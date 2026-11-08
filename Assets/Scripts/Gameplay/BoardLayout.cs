@@ -20,7 +20,7 @@ namespace ColorShiftKnight.Gameplay
         private const float BottomRightX = 1412f;
 
         // How big the picture is drawn on the canvas, and where its centre is.
-        public const float ArtScale = 1.15f;
+        public const float ArtScale = 1.0f;
         public static readonly Vector2 BoardCenterOnCanvas = new Vector2(0f, 0f);
 
         // Corner point in the picture. rowLine and colLine are 0..6 (the lines between squares).

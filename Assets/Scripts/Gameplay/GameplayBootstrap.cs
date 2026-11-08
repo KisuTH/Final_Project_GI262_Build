@@ -241,19 +241,19 @@ namespace ColorShiftKnight.Gameplay
             }
 
             // Side panel
-            Image hudPlate = MakeImage("HudPlate", root, new Vector2(PanelX, 250), new Vector2(440, 240), PanelSprite, PanelFallback);
+            Image hudPlate = MakeImage("HudPlate", root, new Vector2(-PanelX, 330), new Vector2(440, 240), PanelSprite, PanelFallback);
             _hud = MakeText("HUD", hudPlate.transform, new Vector2(0, -4), new Vector2(320, 160), 24, TextAnchor.MiddleLeft);
             FitText(_hud, 12, 24);
 
-            Image messagePlate = MakeImage("MessagePlate", root, new Vector2(PanelX, 10), new Vector2(440, 130), PanelSprite, PanelFallback);
+            Image messagePlate = MakeImage("MessagePlate", root, new Vector2(PanelX, 250), new Vector2(440, 130), PanelSprite, PanelFallback);
             _message = MakeText("Message", messagePlate.transform, new Vector2(0, -2), new Vector2(320, 76), 20, TextAnchor.MiddleLeft);
             FitText(_message, 11, 20);
 
-            Button newLevelButton = MakeButton("NewLevelButton", root, new Vector2(PanelX, -110), "New Level");
+            Button newLevelButton = MakeButton("NewLevelButton", root, new Vector2(PanelX, -440), "New Level");
             newLevelButton.onClick.AddListener(OnNewLevelClicked);
-            Button undoButton = MakeButton("UndoButton", root, new Vector2(PanelX, -200), "Undo");
+            Button undoButton = MakeButton("UndoButton", root, new Vector2(-780, -440), "Undo");
             undoButton.onClick.AddListener(OnUndo);
-            Button hintButton = MakeButton("HintButton", root, new Vector2(PanelX, -290), "Hint");
+            Button hintButton = MakeButton("HintButton", root, new Vector2(-480, -440), "Hint");
             hintButton.onClick.AddListener(OnHint);
 
             // The hint helper (her sheets are painted at screen size, so she gets the whole canvas)
