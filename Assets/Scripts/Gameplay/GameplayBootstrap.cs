@@ -59,6 +59,9 @@ namespace ColorShiftKnight.Gameplay
         private bool _keepInScene;
         private int _levelNumber = 1;
         private Button _restartButton;
+        private Button _nextButton;
+        private Image _overlayDim;
+        private Text _levelText;
 
         private void OnEnable()
         {
@@ -251,8 +254,8 @@ namespace ColorShiftKnight.Gameplay
             _message = MakeText("Message", messagePlate.transform, new Vector2(0, -2), new Vector2(320, 76), 20, TextAnchor.MiddleLeft);
             FitText(_message, 11, 20);
 
-            _restartButton = MakeButton("RestartButton", root, new Vector2(PanelX, -440), "Restart");
-            _restartButton.onClick.AddListener(OnRestartClicked);
+            _levelText = MakeText("LevelText", root, new Vector2(PanelX, 400), new Vector2(440, 60), 44, TextAnchor.MiddleCenter);
+            _levelText.color = new Color(0.72f, 0.72f, 0.76f);
             Button undoButton = MakeButton("UndoButton", root, new Vector2(-780, -440), "Undo");
             undoButton.onClick.AddListener(OnUndo);
             Button hintButton = MakeButton("HintButton", root, new Vector2(-480, -440), "Hint");
@@ -263,15 +266,20 @@ namespace ColorShiftKnight.Gameplay
             _hintDialogue = dialogueGo.AddComponent<HintDialogue>();
             _hintDialogue.Build(HintCharacterFrames, HintFirstPlateSprite, HintSecondPlateSprite, _font);
 
-            // Win screen (created last so it is drawn on top)
+            // Pop-up for winning (Next) and for running out of moves (Restart), created last so it is drawn on top
             Image overlayImg = NewImage("Overlay", root, Vector2.zero, Vector2.zero);
             _overlay = overlayImg.gameObject;
             Inset(overlayImg.rectTransform, 0f);
             overlayImg.color = new Color(0f, 0f, 0f, 0.75f);
+            _overlayDim = overlayImg;
 
             Image modal = MakeImage("Modal", _overlay.transform, Vector2.zero, new Vector2(560, 320), PanelSprite, PanelFallback);
             _overlayTitle = MakeText("Title", modal.transform, new Vector2(0, 90), new Vector2(520, 60), 40, TextAnchor.MiddleCenter);
             _overlayBody = MakeText("Body", modal.transform, new Vector2(0, 10), new Vector2(500, 120), 26, TextAnchor.MiddleCenter);
+            _nextButton = MakeButton("NextButton", modal.transform, new Vector2(0, -110), "Next");
+            _nextButton.onClick.AddListener(OnNextClicked);
+            _restartButton = MakeButton("RestartButton", modal.transform, new Vector2(0, -110), "Restart");
+            _restartButton.onClick.AddListener(OnRestartClicked);
             _overlay.SetActive(false);
 
             if (_keepInScene == false)
@@ -322,7 +330,14 @@ namespace ColorShiftKnight.Gameplay
             Refresh();
         }
 
-        // Shown only after the Move Limit runs out: puts the same level back to its start.
+        // Button of the win pop-up: goes to the next level.
+        private void OnNextClicked()
+        {
+            _levelNumber++;
+            NewLevel();
+        }
+
+        // Button of the move-limit pop-up: puts the same level back to its start.
         private void OnRestartClicked()
         {
             _overlay.SetActive(false);
@@ -355,7 +370,11 @@ namespace ColorShiftKnight.Gameplay
 
             if (result == MoveResult.Won)
             {
-                ShowOverlay("LEVEL " + _levelNumber + " COMPLETE", "Finished in " + _game.State.Moves + " moves (limit " + _game.State.MoveLimit + ").");
+                ShowOverlay("LEVEL " + _levelNumber + " COMPLETE", "Finished in " + _game.State.Moves + " moves (limit " + _game.State.MoveLimit + ").", true);
+            }
+            else if (result == MoveResult.Lost)
+            {
+                ShowOverlay("MOVE LIMIT REACHED", "Undo a move, or restart this level.", false);
             }
             Refresh();
         }
@@ -395,10 +414,15 @@ namespace ColorShiftKnight.Gameplay
             Refresh();
         }
 
-        private void ShowOverlay(string title, string body)
+        private void ShowOverlay(string title, string body, bool won)
         {
             _overlayTitle.text = title;
             _overlayBody.text = body;
+            _nextButton.gameObject.SetActive(won);
+            _restartButton.gameObject.SetActive(won == false);
+            // Winning dims the whole screen; the move-limit pop-up leaves the board and Undo usable
+            _overlayDim.color = new Color(0f, 0f, 0f, won ? 0.75f : 0f);
+            _overlayDim.raycastTarget = won;
             _overlay.SetActive(true);
         }
 
@@ -410,7 +434,11 @@ namespace ColorShiftKnight.Gameplay
                 return;
             }
 
-            _restartButton.gameObject.SetActive(_game.IsLost);
+            _levelText.text = "Level " + _levelNumber;
+            if (_game.IsLost == false && _game.IsWon == false)
+            {
+                _overlay.SetActive(false);
+            }
 
             bool[] legal = _game.LegalMoves();
 
