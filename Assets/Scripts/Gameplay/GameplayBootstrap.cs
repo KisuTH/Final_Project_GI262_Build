@@ -58,6 +58,7 @@ namespace ColorShiftKnight.Gameplay
         private GameObject _canvasGo;
         private bool _keepInScene;
         private int _levelNumber = 1;
+        private Button _restartButton;
 
         private void OnEnable()
         {
@@ -250,8 +251,8 @@ namespace ColorShiftKnight.Gameplay
             _message = MakeText("Message", messagePlate.transform, new Vector2(0, -2), new Vector2(320, 76), 20, TextAnchor.MiddleLeft);
             FitText(_message, 11, 20);
 
-            Button newLevelButton = MakeButton("NewLevelButton", root, new Vector2(PanelX, -440), "New Level");
-            newLevelButton.onClick.AddListener(OnNewLevelClicked);
+            _restartButton = MakeButton("RestartButton", root, new Vector2(PanelX, -440), "Restart");
+            _restartButton.onClick.AddListener(OnRestartClicked);
             Button undoButton = MakeButton("UndoButton", root, new Vector2(-780, -440), "Undo");
             undoButton.onClick.AddListener(OnUndo);
             Button hintButton = MakeButton("HintButton", root, new Vector2(-480, -440), "Hint");
@@ -271,8 +272,6 @@ namespace ColorShiftKnight.Gameplay
             Image modal = MakeImage("Modal", _overlay.transform, Vector2.zero, new Vector2(560, 320), PanelSprite, PanelFallback);
             _overlayTitle = MakeText("Title", modal.transform, new Vector2(0, 90), new Vector2(520, 60), 40, TextAnchor.MiddleCenter);
             _overlayBody = MakeText("Body", modal.transform, new Vector2(0, 10), new Vector2(500, 120), 26, TextAnchor.MiddleCenter);
-            // The dim layer lets clicks pass through, so the real New Level button stays usable
-            overlayImg.raycastTarget = false;
             _overlay.SetActive(false);
 
             if (_keepInScene == false)
@@ -323,13 +322,14 @@ namespace ColorShiftKnight.Gameplay
             Refresh();
         }
 
-        private void OnNewLevelClicked()
+        // Shown only after the Move Limit runs out: puts the same level back to its start.
+        private void OnRestartClicked()
         {
-            if (_overlay.activeSelf)
-            {
-                _levelNumber++;
-            }
-            NewLevel();
+            _overlay.SetActive(false);
+            _hintDialogue.Hide();
+            _game.Restart();
+            _message.text = "Level restarted. Reach the Relic, capture the King, then reach Goal.";
+            Refresh();
         }
 
         // All 36 squares call this method. The clicked square is the one the EventSystem has selected.
@@ -344,7 +344,7 @@ namespace ColorShiftKnight.Gameplay
                     index = i;
                 }
             }
-            if (index < 0 || _overlay.activeSelf)
+            if (index < 0)
             {
                 return;
             }
@@ -409,6 +409,8 @@ namespace ColorShiftKnight.Gameplay
             {
                 return;
             }
+
+            _restartButton.gameObject.SetActive(_game.IsLost);
 
             bool[] legal = _game.LegalMoves();
 
@@ -539,7 +541,7 @@ namespace ColorShiftKnight.Gameplay
             }
             if (result == MoveResult.Lost)
             {
-                return "Move limit reached. Undo or start a new level.";
+                return "Move limit reached. Undo or press Restart.";
             }
             if (result == MoveResult.Rejected)
             {

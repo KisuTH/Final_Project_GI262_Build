@@ -12,6 +12,7 @@ namespace ColorShiftKnight.Core
         public bool IsWon;
         public bool IsLost;
         public int UndosLeft;
+        private LevelState initial;
 
         public GameCore(int seed)
         {
@@ -32,6 +33,7 @@ namespace ColorShiftKnight.Core
             }
 
             State = state;
+            initial = state.Clone();
             history.Clear();
             IsWon = false;
             IsLost = false;
@@ -116,6 +118,20 @@ namespace ColorShiftKnight.Core
             IsLost = false;
             UndosLeft--;
             return true;
+        }
+
+        // Puts the current level back to its starting position (same board, same Move Limit).
+        public void Restart()
+        {
+            if (initial == null)
+            {
+                return;
+            }
+            State = initial.Clone();
+            history.Clear();
+            IsWon = false;
+            IsLost = false;
+            UndosLeft = BoardConfig.MaxUndos;
         }
 
         // Returns null when there is no hint.
