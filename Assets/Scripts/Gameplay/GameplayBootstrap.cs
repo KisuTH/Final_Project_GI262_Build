@@ -57,6 +57,7 @@ namespace ColorShiftKnight.Gameplay
         private GameObject _overlay;
         private GameObject _canvasGo;
         private bool _keepInScene;
+        private int _levelNumber = 1;
 
         private void OnEnable()
         {
@@ -270,8 +271,8 @@ namespace ColorShiftKnight.Gameplay
             Image modal = MakeImage("Modal", _overlay.transform, Vector2.zero, new Vector2(560, 320), PanelSprite, PanelFallback);
             _overlayTitle = MakeText("Title", modal.transform, new Vector2(0, 90), new Vector2(520, 60), 40, TextAnchor.MiddleCenter);
             _overlayBody = MakeText("Body", modal.transform, new Vector2(0, 10), new Vector2(500, 120), 26, TextAnchor.MiddleCenter);
-            Button overlayButton = MakeButton("OverlayNewLevel", modal.transform, new Vector2(0, -110), "New Level");
-            overlayButton.onClick.AddListener(OnNewLevelClicked);
+            // The dim layer lets clicks pass through, so the real New Level button stays usable
+            overlayImg.raycastTarget = false;
             _overlay.SetActive(false);
 
             if (_keepInScene == false)
@@ -324,6 +325,10 @@ namespace ColorShiftKnight.Gameplay
 
         private void OnNewLevelClicked()
         {
+            if (_overlay.activeSelf)
+            {
+                _levelNumber++;
+            }
             NewLevel();
         }
 
@@ -339,7 +344,7 @@ namespace ColorShiftKnight.Gameplay
                     index = i;
                 }
             }
-            if (index < 0)
+            if (index < 0 || _overlay.activeSelf)
             {
                 return;
             }
@@ -350,7 +355,7 @@ namespace ColorShiftKnight.Gameplay
 
             if (result == MoveResult.Won)
             {
-                ShowOverlay("MISSION COMPLETE", "Finished in " + _game.State.Moves + " moves (limit " + _game.State.MoveLimit + ").");
+                ShowOverlay("LEVEL " + _levelNumber + " COMPLETE", "Finished in " + _game.State.Moves + " moves (limit " + _game.State.MoveLimit + ").");
             }
             Refresh();
         }
