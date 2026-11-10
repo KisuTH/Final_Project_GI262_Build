@@ -15,6 +15,7 @@ namespace ColorShiftKnight.Gameplay
     {
         private const int Size = BoardConfig.Size;
         private const int CellCount = BoardConfig.CellCount;
+        private const int LowMovesToShow = 3;     // the delighted face can only appear when this many moves (or fewer) are left
         private const float PanelX = 710f;   // centre of the side panel, to the right of the centred board
 
         private static readonly Color ButtonFallback = new Color(0.15f, 0.20f, 0.28f);
@@ -41,6 +42,10 @@ namespace ColorShiftKnight.Gameplay
         public Sprite HintFirstPlateSprite;
         public Sprite HintSecondPlateSprite;
 
+        [Header("Reaction character art (the two Desire sheets)")]
+        public Texture2D DelightedSheet;
+        public Texture2D FrustratedSheet;
+
         private QuadGraphic[] _cellImages = new QuadGraphic[CellCount];
         private Image[] _cellPieces = new Image[CellCount];
         private Button[] _cellButtons = new Button[CellCount];
@@ -62,6 +67,7 @@ namespace ColorShiftKnight.Gameplay
         private Button _nextButton;
         private Image _overlayDim;
         private Text _levelText;
+        private ReactionFace _reaction;
 
         private void OnEnable()
         {
@@ -244,6 +250,11 @@ namespace ColorShiftKnight.Gameplay
                 Vector2 tipPosition = new Vector2(centers[i].x, centers[i].y + _cellSize[i].y * 0.5f + 34f);
                 hover.Setup(_tooltip, Position.NameOf(i), tipPosition);
             }
+
+            // The reaction character (drawn above the board and below the panels)
+            GameObject reactionGo = NewRect("ReactionFace", root, Vector2.zero, Vector2.zero);
+            _reaction = reactionGo.AddComponent<ReactionFace>();
+            _reaction.Build(DelightedSheet, FrustratedSheet);
 
             // Side panel
             Image hudPlate = MakeImage("HudPlate", root, new Vector2(-PanelX, 330), new Vector2(440, 240), PanelSprite, PanelFallback);
@@ -435,6 +446,7 @@ namespace ColorShiftKnight.Gameplay
             }
 
             _levelText.text = "Level " + _levelNumber;
+            UpdateReaction(s);
             if (_game.IsLost == false && _game.IsWon == false)
             {
                 _overlay.SetActive(false);
@@ -534,6 +546,53 @@ namespace ColorShiftKnight.Gameplay
                         "RELIC    " + relicText + " / 1\n" +
                         "KING     " + kingText + "\n" +
                         "GOAL     " + Position.NameOf(BoardConfig.Goal);
+        }
+
+        // Chooses the mood and stage of the reaction character.
+        //   Stage : follows the moves already made, so she starts calm (stage 1) and changes a little with every step.
+        //           The moves are split in 4 equal parts of the Move Limit, stage 4 is the last part.
+        //   Mood  : Delighted ("Desire Fullfilled") when the limit is about to run out and Game Over is possible,
+        //           otherwise Frustrated ("Desired Unfullfilled").
+        private void UpdateReaction(LevelState s)
+        {
+            int left = s.MoveLimit - s.Moves;
+            int stage = 1;
+            if (s.MoveLimit > 0)
+            {
+                stage = 1 + (s.Moves * 4) / s.MoveLimit;
+            }
+
+            int kind = ReactionFace.KindFrustrated;
+            if (_game.IsWon == false && left <= LowMovesToShow && CanGameOver(s, left))
+            {
+                kind = ReactionFace.KindDelighted;
+            }
+            _reaction.Show(kind, stage);
+        }
+
+        // Game Over is possible when something is still missing, or when the moves that are left
+        // are not more than the shortest way to finish.
+        private bool CanGameOver(LevelState s, int left)
+        {
+            if (s.HasAllObjectives() == false)
+            {
+                return true;
+            }
+            HintResult hint = _game.GetHint();
+            if (hint == null)
+            {
+                return true;
+            }
+            return hint.RemainingMinMoves >= left;
+        }
+
+        // The reaction character steps aside while the hint helper is on screen.
+        private void Update()
+        {
+            if (_reaction != null && _hintDialogue != null)
+            {
+                _reaction.SetHidden(_hintDialogue.IsActive);
+            }
         }
 
         private Sprite ObstacleSprite(int cell)
