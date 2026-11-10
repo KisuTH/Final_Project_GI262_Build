@@ -57,6 +57,50 @@ namespace ColorShiftKnight.Gameplay
         private GameObject _overlay;
         private GameObject _canvasGo;
         private bool _keepInScene;
+        private const int MaxHints = 3;
+        private int _hintsUsed;
+        private Button _undoButton;
+        private Button _hintButton;
+        private Sprite[] _damageSprites;
+        private RectTransform _messagePlate;
+        private float _messageProgress;
+        private bool _messageVisible;
+
+        private void Update()
+        {
+            if (_messagePlate == null) return;
+            _messageProgress = Mathf.MoveTowards(_messageProgress,
+                _messageVisible ? 1f : 0f, Time.unscaledDeltaTime / 0.45f);
+            PositionMessage();
+        }
+
+        private void PositionMessage()
+        {
+            float eased = Mathf.SmoothStep(0f, 1f, _messageProgress);
+            // Anchored to the right edge, so the plate is fully offscreen at any aspect ratio.
+            _messagePlate.anchoredPosition = new Vector2(Mathf.Lerp(250f, -250f, eased), 250f);
+        }
+
+        private void LoadDamageSprites()
+        {
+            _damageSprites = Resources.LoadAll<Sprite>("UI/StoneButtonStates");
+            Array.Sort(_damageSprites, (a, b) => string.CompareOrdinal(a.name, b.name));
+            if (_damageSprites.Length != 4) _damageSprites = null;
+        }
+
+        private void RefreshButton(Button button, int uses)
+        {
+            int stage = Mathf.Clamp(uses, 0, 3);
+            if (_damageSprites != null)
+            {
+                UnityEngine.UI.Image image = button.GetComponent<UnityEngine.UI.Image>();
+                image.sprite = _damageSprites[stage];
+                image.color = Color.white;
+                image.preserveAspect = true;
+            }
+            button.interactable = stage < 3;
+            button.GetComponentInChildren<UnityEngine.UI.Text>(true).enabled = stage < 3;
+        }
 
         private void OnEnable()
         {
@@ -107,6 +151,8 @@ namespace ColorShiftKnight.Gameplay
         // The UI is built from code every time the game starts, so it is removed here first.
         private void Teardown()
         {
+            _messagePlate = null;
+            _damageSprites = null;
             DestroyObject(_canvasGo);
             _canvasGo = null;
 
@@ -166,6 +212,7 @@ namespace ColorShiftKnight.Gameplay
             scaler.matchWidthOrHeight = 0.5f;
             _canvasGo = canvasGo;
             Transform root = canvasGo.transform;
+            LoadDamageSprites();
 
             // Dark backdrop, then the painted board art.
             Image backdrop = NewImage("Backdrop", root, Vector2.zero, Vector2.zero);
@@ -248,13 +295,24 @@ namespace ColorShiftKnight.Gameplay
             Image messagePlate = MakeImage("MessagePlate", root, new Vector2(PanelX, 250), new Vector2(440, 130), PanelSprite, PanelFallback);
             _message = MakeText("Message", messagePlate.transform, new Vector2(0, -2), new Vector2(320, 76), 20, TextAnchor.MiddleLeft);
             FitText(_message, 11, 20);
+            _messagePlate = messagePlate.rectTransform;
+            _messagePlate.anchorMin = _messagePlate.anchorMax = new Vector2(1f, 0.5f);
+            messagePlate.raycastTarget = false;
+            _messageProgress = 0f;
+            _messageVisible = false;
+            PositionMessage();
 
-            Button newLevelButton = MakeButton("NewLevelButton", root, new Vector2(PanelX, -440), "New Level");
+            Button newLevelButton = MakeButton("NewLevelButton", root, new Vector2(PanelX, -340), "New Level");
             newLevelButton.onClick.AddListener(OnNewLevelClicked);
-            Button undoButton = MakeButton("UndoButton", root, new Vector2(-780, -440), "Undo");
-            undoButton.onClick.AddListener(OnUndo);
-            Button hintButton = MakeButton("HintButton", root, new Vector2(-480, -440), "Hint");
-            hintButton.onClick.AddListener(OnHint);
+            _undoButton = MakeButton("UndoButton", root, new Vector2(-780, -440), "Undo");
+            _undoButton.onClick.AddListener(OnUndo);
+            _hintButton = MakeButton("HintButton", root, new Vector2(PanelX, -440), "Hint");
+            _hintButton.onClick.AddListener(OnHint);
+            foreach (Button action in new[] { _undoButton, _hintButton })
+            {
+                action.transition = Selectable.Transition.None;
+                ((RectTransform)action.transform).sizeDelta = new Vector2(350f, 92f);
+            }
 
             // The hint helper (her sheets are painted at screen size, so she gets the whole canvas)
             GameObject dialogueGo = NewRect("HintDialogue", root, Vector2.zero, Vector2.zero);
@@ -313,6 +371,10 @@ namespace ColorShiftKnight.Gameplay
             _hintDialogue.Hide();
             if (_game.StartNewLevel())
             {
+                _hintsUsed = 0;
+                _messageVisible = false;
+                _messageProgress = 0f;
+                PositionMessage();
                 _message.text = "New level generated. Reach the Relic, capture the King, then reach Goal.";
             }
             else
@@ -345,6 +407,7 @@ namespace ColorShiftKnight.Gameplay
             }
 
             _hintDialogue.Hide();
+            _messageVisible = false;
             int result = _game.TryMove(index);
             _message.text = Describe(result);
 
@@ -357,6 +420,7 @@ namespace ColorShiftKnight.Gameplay
 
         private void OnUndo()
         {
+            _messageVisible = false;
             _hintDialogue.Hide();
             if (_game.UndosLeft <= 0)
             {
@@ -375,9 +439,12 @@ namespace ColorShiftKnight.Gameplay
 
         private void OnHint()
         {
+            if (_hintsUsed >= MaxHints) return;
+            _messageVisible = true;
             HintResult hint = _game.GetHint();
             if (hint != null)
             {
+                _hintsUsed++;
                 _message.text = "Hint: go to " + Position.NameOf(hint.NextSquare) + ". Minimum " + hint.RemainingMinMoves + " moves left.";
                 _hintDialogue.Show("Psst... try " + Position.NameOf(hint.NextSquare) + ".",
                                    "That is the shortest way. " + hint.RemainingMinMoves + " moves left at the least.");
@@ -399,6 +466,8 @@ namespace ColorShiftKnight.Gameplay
 
         private void Refresh()
         {
+            RefreshButton(_undoButton, BoardConfig.MaxUndos - _game.UndosLeft);
+            RefreshButton(_hintButton, _hintsUsed);
             LevelState s = _game.State;
             if (s == null)
             {
