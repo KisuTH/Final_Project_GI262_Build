@@ -288,8 +288,8 @@ namespace ColorShiftKnight.Gameplay
             }
 
             // Side panel
-            Image hudPlate = MakeImage("HudPlate", root, new Vector2(-PanelX, 330), new Vector2(440, 240), PanelSprite, PanelFallback);
-            _hud = MakeText("HUD", hudPlate.transform, new Vector2(0, -4), new Vector2(320, 160), 24, TextAnchor.MiddleLeft);
+            Image hudPlate = MakeImage("HudPlate", root, new Vector2(-PanelX, 330), new Vector2(440, 130), PanelSprite, PanelFallback);
+            _hud = MakeText("HUD", hudPlate.transform, new Vector2(0, -4), new Vector2(320, 64), 24, TextAnchor.MiddleLeft);
             FitText(_hud, 12, 24);
 
             Image messagePlate = MakeImage("MessagePlate", root, new Vector2(PanelX, 250), new Vector2(440, 130), PanelSprite, PanelFallback);
@@ -446,13 +446,10 @@ namespace ColorShiftKnight.Gameplay
             {
                 _hintsUsed++;
                 _message.text = "Hint: go to " + Position.NameOf(hint.NextSquare) + ". Minimum " + hint.RemainingMinMoves + " moves left.";
-                _hintDialogue.Show("Psst... try " + Position.NameOf(hint.NextSquare) + ".",
-                                   "That is the shortest way. " + hint.RemainingMinMoves + " moves left at the least.");
             }
             else
             {
                 _message.text = "No hint available.";
-                _hintDialogue.Show("Hmm...", "I have no hint for you right now.");
             }
             Refresh();
         }
@@ -546,28 +543,8 @@ namespace ColorShiftKnight.Gameplay
                 _cellButtons[i].interactable = isLegal;
             }
 
-            string boardColor = "WHITE";
-            if (s.BoardShifted)
-            {
-                boardColor = "BLACK";
-            }
-            string relicText = "0";
-            if (s.RelicCollected)
-            {
-                relicText = "1";
-            }
-            string kingText = "NOT YET";
-            if (s.KingCaptured)
-            {
-                kingText = "CAPTURED";
-            }
-
             _hud.text = "MOVES    " + s.Moves + "\n" +
-                        "LIMIT    " + s.MoveLimit + "\n" +
-                        "BOARD    " + boardColor + "\n" +
-                        "RELIC    " + relicText + " / 1\n" +
-                        "KING     " + kingText + "\n" +
-                        "GOAL     " + Position.NameOf(BoardConfig.Goal);
+                        "LIMIT    " + s.MoveLimit;
         }
 
         private Sprite ObstacleSprite(int cell)
