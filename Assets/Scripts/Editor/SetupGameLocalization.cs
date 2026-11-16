@@ -18,7 +18,7 @@ public static class SetupGameLocalization
         {
             if (!EditorApplication.isPlayingOrWillChangePlaymode &&
                 (!File.Exists("Assets/Localization/GameLocalizationSettings.asset") ||
-                 LocalizationEditorSettings.GetStringTableCollection("GameUI")?.SharedData.GetEntry("Level") == null)) Run();
+                 LocalizationEditorSettings.GetStringTableCollection("GameUI")?.SharedData.GetEntry("MoveLimitBody") == null)) Run();
         };
     }
 

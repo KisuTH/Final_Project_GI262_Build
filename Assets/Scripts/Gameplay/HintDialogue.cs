@@ -76,7 +76,7 @@ namespace ColorShiftKnight.Gameplay
         }
 
         // Shares the message plate's animation and stays behind it in the canvas.
-        public void PresentOnLeft(float progress)
+        public void PresentOnLeft(float progress, float characterHeight)
         {
             _active = false;
             _firstPlate.SetActive(false);
@@ -92,13 +92,15 @@ namespace ColorShiftKnight.Gameplay
             float aspect = _characterImage.sprite != null
                 ? _characterImage.sprite.rect.height / _characterImage.sprite.rect.width
                 : 702f / 404f;
-            const float width = 300f;
-            _character.sizeDelta = new Vector2(width, width * aspect);
-            _character.anchorMin = _character.anchorMax = new Vector2(0f, .5f);
+            // Reaction sheets include extra transparent space above the visible character.
+            float height = (characterHeight > 0f ? characterHeight : 758.4f) * .8f;
+            float width = height / aspect;
+            _character.sizeDelta = new Vector2(width, height);
+            _character.anchorMin = _character.anchorMax = Vector2.zero;
             // Slide in from the left edge, facing toward the board.
             _character.pivot = Vector2.zero;
             _character.localScale = Vector3.one;
-            _character.anchoredPosition = new Vector2(Mathf.Lerp(-width - 30f, 0f, progress), -250f);
+            _character.anchoredPosition = new Vector2(Mathf.Lerp(-width - 30f, 0f, progress), 143f);
         }
 
         public void Hide()

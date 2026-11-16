@@ -157,6 +157,30 @@ MonoBehaviour:
     m_Localized: LEVEL
     m_Metadata:
       m_Items: []
+  - m_Id: 106788502724608
+    m_Localized: Next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473344
+    m_Localized: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473345
+    m_Localized: Level restarted. Reach the Relic, capture the King, then reach Goal.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473346
+    m_Localized: LEVEL {0} COMPLETE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788544667648
+    m_Localized: MOVE LIMIT REACHED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788544667649
+    m_Localized: Undo a move, or restart this level.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

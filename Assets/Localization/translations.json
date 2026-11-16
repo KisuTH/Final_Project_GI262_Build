@@ -169,6 +169,36 @@
       "key": "Level",
       "en": "LEVEL",
       "th": "ด่าน"
+    },
+    {
+      "key": "Next",
+      "en": "Next",
+      "th": "ด่านถัดไป"
+    },
+    {
+      "key": "Restart",
+      "en": "Restart",
+      "th": "เริ่มใหม่"
+    },
+    {
+      "key": "RestartMessage",
+      "en": "Level restarted. Reach the Relic, capture the King, then reach Goal.",
+      "th": "เริ่มด่านเดิมใหม่ เก็บวัตถุโบราณ จับราชา แล้วไปยังจุดหมาย"
+    },
+    {
+      "key": "LevelComplete",
+      "en": "LEVEL {0} COMPLETE",
+      "th": "ผ่านด่าน {0}"
+    },
+    {
+      "key": "MoveLimitTitle",
+      "en": "MOVE LIMIT REACHED",
+      "th": "เดินครบจำนวนแล้ว"
+    },
+    {
+      "key": "MoveLimitBody",
+      "en": "Undo a move, or restart this level.",
+      "th": "ย้อนกลับหนึ่งครั้ง หรือเริ่มด่านนี้ใหม่"
     }
   ]
 }

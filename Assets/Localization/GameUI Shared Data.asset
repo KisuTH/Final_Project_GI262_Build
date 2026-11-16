@@ -151,6 +151,30 @@ MonoBehaviour:
     m_Key: Level
     m_Metadata:
       m_Items: []
+  - m_Id: 106788502724608
+    m_Key: Next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473344
+    m_Key: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473345
+    m_Key: RestartMessage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473346
+    m_Key: LevelComplete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788544667648
+    m_Key: MoveLimitTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788544667649
+    m_Key: MoveLimitBody
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
