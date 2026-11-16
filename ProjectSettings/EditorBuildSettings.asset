@@ -11,5 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Gameplay.unity
     guid: ebfa16b1ee5c73b46a0c2163c88e336f
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: f0fd318e5b0b1dc43aa5920aa410ae54
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: bd9826c71cf029e40be842eb9d04f1c4, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    com.unity.localization.settings: {fileID: 11400000, guid: 7be04172aa70e7f4b8d12f9f6e37bb4b, type: 2}

@@ -69,6 +69,32 @@ namespace ColorShiftKnight.Gameplay
             _secondPlate.SetActive(false);
         }
 
+        // Shares the message plate's animation and stays behind it in the canvas.
+        public void PresentOnRight(float progress)
+        {
+            _active = false;
+            _firstPlate.SetActive(false);
+            _secondPlate.SetActive(false);
+            _character.gameObject.SetActive(progress > 0f);
+            if (progress <= 0f)
+            {
+                _time = 0f;
+                return;
+            }
+            _time += Time.deltaTime;
+            ShowFrame((int)(_time / FrameSeconds) % 2);
+            float aspect = _characterImage.sprite != null
+                ? _characterImage.sprite.rect.height / _characterImage.sprite.rect.width
+                : 702f / 404f;
+            const float width = 300f;
+            _character.sizeDelta = new Vector2(width, width * aspect);
+            _character.anchorMin = _character.anchorMax = new Vector2(1f, .5f);
+            // Mirroring around the left pivot makes the character extend left from the right edge.
+            _character.pivot = Vector2.zero;
+            _character.localScale = new Vector3(-1f, 1f, 1f);
+            _character.anchoredPosition = new Vector2(Mathf.Lerp(width + 30f, 0f, progress), -250f);
+        }
+
         public void Hide()
         {
             _active = false;

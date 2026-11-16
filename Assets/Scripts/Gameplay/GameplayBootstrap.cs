@@ -11,7 +11,7 @@ namespace ColorShiftKnight.Gameplay
 {
     // Builds the gameplay UI from code and connects it to GameCore.
     // The art fields are assigned in the Inspector (or by the "Create Gameplay Scene" menu command).
-    public class GameplayBootstrap : MonoBehaviour
+    public partial class GameplayBootstrap : MonoBehaviour
     {
         private const int Size = BoardConfig.Size;
         private const int CellCount = BoardConfig.CellCount;
@@ -57,8 +57,6 @@ namespace ColorShiftKnight.Gameplay
         private GameObject _overlay;
         private GameObject _canvasGo;
         private bool _keepInScene;
-        private const int MaxHints = 3;
-        private int _hintsUsed;
         private Button _undoButton;
         private Button _hintButton;
         private Sprite[] _damageSprites;
@@ -68,7 +66,8 @@ namespace ColorShiftKnight.Gameplay
 
         private void Update()
         {
-            if (_messagePlate == null) return;
+            UpdatePauseInput();
+            if (_paused || _messagePlate == null) return;
             _messageProgress = Mathf.MoveTowards(_messageProgress,
                 _messageVisible ? 1f : 0f, Time.unscaledDeltaTime / 0.45f);
             PositionMessage();
@@ -78,7 +77,8 @@ namespace ColorShiftKnight.Gameplay
         {
             float eased = Mathf.SmoothStep(0f, 1f, _messageProgress);
             // Anchored to the right edge, so the plate is fully offscreen at any aspect ratio.
-            _messagePlate.anchoredPosition = new Vector2(Mathf.Lerp(250f, -250f, eased), 250f);
+            _messagePlate.anchoredPosition = new Vector2(Mathf.Lerp(250f, -250f, eased), -200f);
+            if (_hintDialogue != null) _hintDialogue.PresentOnRight(eased);
         }
 
         private void LoadDamageSprites()
@@ -151,6 +151,7 @@ namespace ColorShiftKnight.Gameplay
         // The UI is built from code every time the game starts, so it is removed here first.
         private void Teardown()
         {
+            ReleasePause();
             _messagePlate = null;
             _damageSprites = null;
             DestroyObject(_canvasGo);
@@ -292,7 +293,7 @@ namespace ColorShiftKnight.Gameplay
             _hud = MakeText("HUD", hudPlate.transform, new Vector2(0, -4), new Vector2(320, 64), 24, TextAnchor.MiddleLeft);
             FitText(_hud, 12, 24);
 
-            Image messagePlate = MakeImage("MessagePlate", root, new Vector2(PanelX, 250), new Vector2(440, 130), PanelSprite, PanelFallback);
+            Image messagePlate = MakeImage("MessagePlate", root, new Vector2(PanelX, 0), new Vector2(440, 130), PanelSprite, PanelFallback);
             _message = MakeText("Message", messagePlate.transform, new Vector2(0, -2), new Vector2(320, 76), 20, TextAnchor.MiddleLeft);
             FitText(_message, 11, 20);
             _messagePlate = messagePlate.rectTransform;
@@ -302,8 +303,6 @@ namespace ColorShiftKnight.Gameplay
             _messageVisible = false;
             PositionMessage();
 
-            Button newLevelButton = MakeButton("NewLevelButton", root, new Vector2(PanelX, -340), "New Level");
-            newLevelButton.onClick.AddListener(OnNewLevelClicked);
             _undoButton = MakeButton("UndoButton", root, new Vector2(-780, -440), "Undo");
             _undoButton.onClick.AddListener(OnUndo);
             _hintButton = MakeButton("HintButton", root, new Vector2(PanelX, -440), "Hint");
@@ -314,10 +313,11 @@ namespace ColorShiftKnight.Gameplay
                 ((RectTransform)action.transform).sizeDelta = new Vector2(350f, 92f);
             }
 
-            // The hint helper (her sheets are painted at screen size, so she gets the whole canvas)
+            // The helper renders behind the message and action buttons.
             GameObject dialogueGo = NewRect("HintDialogue", root, Vector2.zero, Vector2.zero);
             _hintDialogue = dialogueGo.AddComponent<HintDialogue>();
             _hintDialogue.Build(HintCharacterFrames, HintFirstPlateSprite, HintSecondPlateSprite, _font);
+            dialogueGo.transform.SetSiblingIndex(messagePlate.transform.GetSiblingIndex());
 
             // Win screen (created last so it is drawn on top)
             Image overlayImg = NewImage("Overlay", root, Vector2.zero, Vector2.zero);
@@ -331,6 +331,10 @@ namespace ColorShiftKnight.Gameplay
             Button overlayButton = MakeButton("OverlayNewLevel", modal.transform, new Vector2(0, -110), "New Level");
             overlayButton.onClick.AddListener(OnNewLevelClicked);
             _overlay.SetActive(false);
+
+            BuildPauseUi(root);
+            foreach (var label in root.GetComponentsInChildren<UnityEngine.UI.Text>(true))
+                GameLocalization.Label(label, label.text);
 
             if (_keepInScene == false)
             {
@@ -371,27 +375,28 @@ namespace ColorShiftKnight.Gameplay
             _hintDialogue.Hide();
             if (_game.StartNewLevel())
             {
-                _hintsUsed = 0;
                 _messageVisible = false;
                 _messageProgress = 0f;
                 PositionMessage();
-                _message.text = "New level generated. Reach the Relic, capture the King, then reach Goal.";
+                GameLocalization.Set(_message, "NewLevelMessage");
             }
             else
             {
-                _message.text = "Could not generate a level. Try again.";
+                GameLocalization.Set(_message, "GenerateFailed");
             }
             Refresh();
         }
 
         private void OnNewLevelClicked()
         {
+            if (_paused) return;
             NewLevel();
         }
 
         // All 36 squares call this method. The clicked square is the one the EventSystem has selected.
         private void OnCellClicked()
         {
+            if (_paused) return;
             GameObject clicked = EventSystem.current.currentSelectedGameObject;
             int index = -1;
             for (int i = 0; i < CellCount; i++)
@@ -409,62 +414,62 @@ namespace ColorShiftKnight.Gameplay
             _hintDialogue.Hide();
             _messageVisible = false;
             int result = _game.TryMove(index);
-            _message.text = Describe(result);
+            GameLocalization.Set(_message, Describe(result));
 
             if (result == MoveResult.Won)
             {
-                ShowOverlay("MISSION COMPLETE", "Finished in " + _game.State.Moves + " moves (limit " + _game.State.MoveLimit + ").");
+                ShowOverlay("WinTitle", "WinBody", _game.State.Moves, _game.State.MoveLimit);
             }
             Refresh();
         }
 
         private void OnUndo()
         {
+            if (_paused) return;
             _messageVisible = false;
             _hintDialogue.Hide();
             if (_game.UndosLeft <= 0)
             {
-                _message.text = "No undo left. Each level allows " + BoardConfig.MaxUndos + ".";
+                GameLocalization.Set(_message, "NoUndo", BoardConfig.MaxUndos);
             }
             else if (_game.Undo())
             {
-                _message.text = "Undid one move. " + _game.UndosLeft + " undo left.";
+                GameLocalization.Set(_message, "UndoMessage", _game.UndosLeft);
             }
             else
             {
-                _message.text = "Nothing to undo.";
+                GameLocalization.Set(_message, "NothingToUndo");
             }
             Refresh();
         }
 
         private void OnHint()
         {
-            if (_hintsUsed >= MaxHints) return;
+            if (_paused) return;
             _messageVisible = true;
             HintResult hint = _game.GetHint();
             if (hint != null)
             {
-                _hintsUsed++;
-                _message.text = "Hint: go to " + Position.NameOf(hint.NextSquare) + ". Minimum " + hint.RemainingMinMoves + " moves left.";
+                GameLocalization.Set(_message, "HintMessage", Position.NameOf(hint.NextSquare), hint.RemainingMinMoves);
             }
             else
             {
-                _message.text = "No hint available.";
+                GameLocalization.Set(_message, "NoHint");
             }
             Refresh();
         }
 
-        private void ShowOverlay(string title, string body)
+        private void ShowOverlay(string title, string body, params object[] arguments)
         {
-            _overlayTitle.text = title;
-            _overlayBody.text = body;
+            GameLocalization.Set(_overlayTitle, title);
+            GameLocalization.Set(_overlayBody, body, arguments);
             _overlay.SetActive(true);
         }
 
         private void Refresh()
         {
             RefreshButton(_undoButton, BoardConfig.MaxUndos - _game.UndosLeft);
-            RefreshButton(_hintButton, _hintsUsed);
+            RefreshButton(_hintButton, 0);
             LevelState s = _game.State;
             if (s == null)
             {
@@ -543,8 +548,7 @@ namespace ColorShiftKnight.Gameplay
                 _cellButtons[i].interactable = isLegal;
             }
 
-            _hud.text = "MOVES    " + s.Moves + "\n" +
-                        "LIMIT    " + s.MoveLimit;
+            GameLocalization.Set(_hud, "Hud", s.Moves, s.MoveLimit);
         }
 
         private Sprite ObstacleSprite(int cell)
@@ -560,33 +564,33 @@ namespace ColorShiftKnight.Gameplay
         {
             if (result == MoveResult.Moved)
             {
-                return "Moved.";
+                return "Moved";
             }
             if (result == MoveResult.RelicCollected)
             {
-                return "Shadow Relic collected! The board flipped and obstacles were reshuffled.";
+                return "RelicCollected";
             }
             if (result == MoveResult.KingCaptured)
             {
-                return "King captured!";
+                return "KingCaptured";
             }
             if (result == MoveResult.GoalLocked)
             {
-                return "Goal is locked. Collect the Relic and capture the King first.";
+                return "GoalLocked";
             }
             if (result == MoveResult.Won)
             {
-                return "Mission complete!";
+                return "Won";
             }
             if (result == MoveResult.Lost)
             {
-                return "Move limit reached. Undo or start a new level.";
+                return "Lost";
             }
             if (result == MoveResult.Rejected)
             {
-                return "No solvable layout after the Relic, so that move is blocked.";
+                return "Rejected";
             }
-            return "That move is not allowed.";
+            return "InvalidMove";
         }
 
         private Button MakeButton(string name, Transform parent, Vector2 pos, string label)
