@@ -12,6 +12,7 @@ namespace ColorShiftKnight.Core
         public bool IsWon;
         public bool IsLost;
         public int UndosLeft;
+        public int LevelNumber { get; private set; }
 
         public GameCore(int seed)
         {
@@ -32,6 +33,7 @@ namespace ColorShiftKnight.Core
             }
 
             State = state;
+            LevelNumber++;
             history.Clear();
             IsWon = false;
             IsLost = false;

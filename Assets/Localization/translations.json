@@ -1,35 +1,174 @@
-{"entries":[
-{"key":"Start","en":"Start","th":"เริ่มเกม"},
-{"key":"Options","en":"OPTIONS","th":"ตั้งค่า"},
-{"key":"Pause","en":"PAUSE","th":"หยุดเกม"},
-{"key":"Paused","en":"PAUSED","th":"หยุดเกมชั่วคราว"},
-{"key":"Resume","en":"RESUME","th":"เล่นต่อ"},
-{"key":"Back","en":"BACK","th":"กลับ"},
-{"key":"BackToMenu","en":"BACK TO MENU","th":"กลับเมนูหลัก"},
-{"key":"NewLevel","en":"New Level","th":"ด่านใหม่"},
-{"key":"Undo","en":"Undo","th":"ย้อนกลับ"},
-{"key":"Hint","en":"Hint","th":"คำใบ้"},
-{"key":"MainSound","en":"MAIN SOUND","th":"เสียงหลัก"},
-{"key":"Music","en":"MUSIC","th":"เสียงเพลง"},
-{"key":"Effect","en":"EFFECT","th":"เสียงเอฟเฟกต์"},
-{"key":"Language","en":"LANGUAGE","th":"ภาษา"},
-{"key":"LanguageChoice","en":"English  /  ไทย","th":"ไทย  /  English"},
-{"key":"Hud","en":"MOVES    {0}\nLIMIT    {1}","th":"เดินแล้ว    {0}\nเดินได้สูงสุด    {1}"},
-{"key":"HintMessage","en":"Hint: go to {0}. Minimum {1} moves left.","th":"คำใบ้: ไปช่อง {0} เหลืออย่างน้อย {1} ครั้ง"},
-{"key":"NoHint","en":"No hint available.","th":"ไม่มีคำใบ้ในขณะนี้"},
-{"key":"NewLevelMessage","en":"New level generated. Reach the Relic, capture the King, then reach Goal.","th":"เริ่มด่านใหม่ เก็บวัตถุโบราณ จับราชา แล้วไปยังจุดหมาย"},
-{"key":"GenerateFailed","en":"Could not generate a level. Try again.","th":"สร้างด่านไม่สำเร็จ โปรดลองอีกครั้ง"},
-{"key":"WinTitle","en":"MISSION COMPLETE","th":"ภารกิจสำเร็จ"},
-{"key":"WinBody","en":"Finished in {0} moves (limit {1}).","th":"สำเร็จใน {0} ครั้ง (เดินได้สูงสุด {1} ครั้ง)"},
-{"key":"NoUndo","en":"No undo left. Each level allows {0}.","th":"ย้อนกลับหมดแล้ว แต่ละด่านย้อนกลับได้ {0} ครั้ง"},
-{"key":"UndoMessage","en":"Undid one move. {0} undo left.","th":"ย้อนกลับหนึ่งครั้ง เหลืออีก {0} ครั้ง"},
-{"key":"NothingToUndo","en":"Nothing to undo.","th":"ยังไม่มีการเดินให้ย้อนกลับ"},
-{"key":"Moved","en":"Moved.","th":"เดินแล้ว"},
-{"key":"RelicCollected","en":"Shadow Relic collected! The board flipped and obstacles were reshuffled.","th":"เก็บวัตถุโบราณแล้ว! กระดานสลับสีและสิ่งกีดขวางเปลี่ยนตำแหน่ง"},
-{"key":"KingCaptured","en":"King captured!","th":"จับราชาแล้ว!"},
-{"key":"GoalLocked","en":"Goal is locked. Collect the Relic and capture the King first.","th":"จุดหมายยังถูกล็อก ต้องเก็บวัตถุโบราณและจับราชาก่อน"},
-{"key":"Won","en":"Mission complete!","th":"ภารกิจสำเร็จ!"},
-{"key":"Lost","en":"Move limit reached. Undo or return to the menu.","th":"เดินครบจำนวนแล้ว ย้อนกลับหรือกลับเมนูหลัก"},
-{"key":"Rejected","en":"No solvable layout after the Relic, so that move is blocked.","th":"การเดินนี้ทำให้ไม่มีทางแก้หลังเก็บวัตถุโบราณ จึงเดินไม่ได้"},
-{"key":"InvalidMove","en":"That move is not allowed.","th":"ไม่สามารถเดินไปช่องนั้นได้"}
-]}
+{
+  "entries": [
+    {
+      "key": "Start",
+      "en": "Start",
+      "th": "เริ่มเกม"
+    },
+    {
+      "key": "Options",
+      "en": "OPTIONS",
+      "th": "ตั้งค่า"
+    },
+    {
+      "key": "Pause",
+      "en": "PAUSE",
+      "th": "หยุดเกม"
+    },
+    {
+      "key": "Paused",
+      "en": "PAUSED",
+      "th": "หยุดเกมชั่วคราว"
+    },
+    {
+      "key": "Resume",
+      "en": "RESUME",
+      "th": "เล่นต่อ"
+    },
+    {
+      "key": "Back",
+      "en": "BACK",
+      "th": "กลับ"
+    },
+    {
+      "key": "BackToMenu",
+      "en": "BACK TO MENU",
+      "th": "กลับเมนูหลัก"
+    },
+    {
+      "key": "NewLevel",
+      "en": "New Level",
+      "th": "ด่านใหม่"
+    },
+    {
+      "key": "Undo",
+      "en": "Undo",
+      "th": "ย้อนกลับ"
+    },
+    {
+      "key": "Hint",
+      "en": "Hint",
+      "th": "คำใบ้"
+    },
+    {
+      "key": "MainSound",
+      "en": "MAIN SOUND",
+      "th": "เสียงหลัก"
+    },
+    {
+      "key": "Music",
+      "en": "MUSIC",
+      "th": "เสียงเพลง"
+    },
+    {
+      "key": "Effect",
+      "en": "EFFECT",
+      "th": "เสียงเอฟเฟกต์"
+    },
+    {
+      "key": "Language",
+      "en": "LANGUAGE",
+      "th": "ภาษา"
+    },
+    {
+      "key": "LanguageChoice",
+      "en": "English  /  ไทย",
+      "th": "ไทย  /  English"
+    },
+    {
+      "key": "Hud",
+      "en": "MOVES    {0}\nLIMIT    {1}",
+      "th": "เดินแล้ว    {0}\nเดินได้สูงสุด    {1}"
+    },
+    {
+      "key": "HintMessage",
+      "en": "Hint: go to {0}. Minimum {1} moves left.",
+      "th": "คำใบ้: ไปช่อง {0} เหลืออย่างน้อย {1} ครั้ง"
+    },
+    {
+      "key": "NoHint",
+      "en": "No hint available.",
+      "th": "ไม่มีคำใบ้ในขณะนี้"
+    },
+    {
+      "key": "NewLevelMessage",
+      "en": "New level generated. Reach the Relic, capture the King, then reach Goal.",
+      "th": "เริ่มด่านใหม่ เก็บวัตถุโบราณ จับราชา แล้วไปยังจุดหมาย"
+    },
+    {
+      "key": "GenerateFailed",
+      "en": "Could not generate a level. Try again.",
+      "th": "สร้างด่านไม่สำเร็จ โปรดลองอีกครั้ง"
+    },
+    {
+      "key": "WinTitle",
+      "en": "MISSION COMPLETE",
+      "th": "ภารกิจสำเร็จ"
+    },
+    {
+      "key": "WinBody",
+      "en": "Finished in {0} moves (limit {1}).",
+      "th": "สำเร็จใน {0} ครั้ง (เดินได้สูงสุด {1} ครั้ง)"
+    },
+    {
+      "key": "NoUndo",
+      "en": "No undo left. Each level allows {0}.",
+      "th": "ย้อนกลับหมดแล้ว แต่ละด่านย้อนกลับได้ {0} ครั้ง"
+    },
+    {
+      "key": "UndoMessage",
+      "en": "Undid one move. {0} undo left.",
+      "th": "ย้อนกลับหนึ่งครั้ง เหลืออีก {0} ครั้ง"
+    },
+    {
+      "key": "NothingToUndo",
+      "en": "Nothing to undo.",
+      "th": "ยังไม่มีการเดินให้ย้อนกลับ"
+    },
+    {
+      "key": "Moved",
+      "en": "Moved.",
+      "th": "เดินแล้ว"
+    },
+    {
+      "key": "RelicCollected",
+      "en": "Shadow Relic collected! The board flipped and obstacles were reshuffled.",
+      "th": "เก็บวัตถุโบราณแล้ว! กระดานสลับสีและสิ่งกีดขวางเปลี่ยนตำแหน่ง"
+    },
+    {
+      "key": "KingCaptured",
+      "en": "King captured!",
+      "th": "จับราชาแล้ว!"
+    },
+    {
+      "key": "GoalLocked",
+      "en": "Goal is locked. Collect the Relic and capture the King first.",
+      "th": "จุดหมายยังถูกล็อก ต้องเก็บวัตถุโบราณและจับราชาก่อน"
+    },
+    {
+      "key": "Won",
+      "en": "Mission complete!",
+      "th": "ภารกิจสำเร็จ!"
+    },
+    {
+      "key": "Lost",
+      "en": "Move limit reached. Undo or return to the menu.",
+      "th": "เดินครบจำนวนแล้ว ย้อนกลับหรือกลับเมนูหลัก"
+    },
+    {
+      "key": "Rejected",
+      "en": "No solvable layout after the Relic, so that move is blocked.",
+      "th": "การเดินนี้ทำให้ไม่มีทางแก้หลังเก็บวัตถุโบราณ จึงเดินไม่ได้"
+    },
+    {
+      "key": "InvalidMove",
+      "en": "That move is not allowed.",
+      "th": "ไม่สามารถเดินไปช่องนั้นได้"
+    },
+    {
+      "key": "Level",
+      "en": "LEVEL",
+      "th": "ด่าน"
+    }
+  ]
+}

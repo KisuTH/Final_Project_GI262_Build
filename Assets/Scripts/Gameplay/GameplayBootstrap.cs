@@ -49,6 +49,7 @@ namespace ColorShiftKnight.Gameplay
         private GameCore _game;
         private Font _font;
         private Text _hud;
+        private Text _levelNumber;
         private Text _message;
         private Text _overlayTitle;
         private Text _overlayBody;
@@ -76,9 +77,9 @@ namespace ColorShiftKnight.Gameplay
         private void PositionMessage()
         {
             float eased = Mathf.SmoothStep(0f, 1f, _messageProgress);
-            // Anchored to the right edge, so the plate is fully offscreen at any aspect ratio.
-            _messagePlate.anchoredPosition = new Vector2(Mathf.Lerp(250f, -250f, eased), -200f);
-            if (_hintDialogue != null) _hintDialogue.PresentOnRight(eased);
+            // Anchored to the left edge, so the plate is fully offscreen at any aspect ratio.
+            _messagePlate.anchoredPosition = new Vector2(Mathf.Lerp(-250f, 250f, eased), -200f);
+            if (_hintDialogue != null) _hintDialogue.PresentOnLeft(eased);
         }
 
         private void LoadDamageSprites()
@@ -288,24 +289,36 @@ namespace ColorShiftKnight.Gameplay
                 hover.Setup(_tooltip, Position.NameOf(i), tipPosition);
             }
 
+            GameObject levelBadge = NewRect("LevelBadge", root, new Vector2(0, -100), new Vector2(156, 156));
+            RectTransform badgeRect = (RectTransform)levelBadge.transform;
+            badgeRect.anchorMin = badgeRect.anchorMax = Vector2.one;
+            badgeRect.pivot = Vector2.one;
+            badgeRect.anchoredPosition = new Vector2(-64, -120);
+            var badgeGraphic = levelBadge.AddComponent<LevelBadgeGraphic>();
+            badgeGraphic.raycastTarget = false;
+            Text levelLabel = MakeText("LevelLabel", levelBadge.transform, new Vector2(0, 28), new Vector2(108, 36), 23, TextAnchor.MiddleCenter);
+            GameLocalization.Set(levelLabel, "Level");
+            _levelNumber = MakeText("LevelNumber", levelBadge.transform, new Vector2(0, -16), new Vector2(108, 66), 48, TextAnchor.MiddleCenter);
+            FitText(_levelNumber, 18, 48);
+
             // Side panel
             Image hudPlate = MakeImage("HudPlate", root, new Vector2(-PanelX, 330), new Vector2(440, 130), PanelSprite, PanelFallback);
             _hud = MakeText("HUD", hudPlate.transform, new Vector2(0, -4), new Vector2(320, 64), 24, TextAnchor.MiddleLeft);
             FitText(_hud, 12, 24);
 
-            Image messagePlate = MakeImage("MessagePlate", root, new Vector2(PanelX, 0), new Vector2(440, 130), PanelSprite, PanelFallback);
+            Image messagePlate = MakeImage("MessagePlate", root, new Vector2(-PanelX, 0), new Vector2(440, 130), PanelSprite, PanelFallback);
             _message = MakeText("Message", messagePlate.transform, new Vector2(0, -2), new Vector2(320, 76), 20, TextAnchor.MiddleLeft);
             FitText(_message, 11, 20);
             _messagePlate = messagePlate.rectTransform;
-            _messagePlate.anchorMin = _messagePlate.anchorMax = new Vector2(1f, 0.5f);
+            _messagePlate.anchorMin = _messagePlate.anchorMax = new Vector2(0f, 0.5f);
             messagePlate.raycastTarget = false;
             _messageProgress = 0f;
             _messageVisible = false;
             PositionMessage();
 
-            _undoButton = MakeButton("UndoButton", root, new Vector2(-780, -440), "Undo");
+            _undoButton = MakeButton("UndoButton", root, new Vector2(PanelX, -440), "Undo");
             _undoButton.onClick.AddListener(OnUndo);
-            _hintButton = MakeButton("HintButton", root, new Vector2(PanelX, -440), "Hint");
+            _hintButton = MakeButton("HintButton", root, new Vector2(PanelX, -340), "Hint");
             _hintButton.onClick.AddListener(OnHint);
             foreach (Button action in new[] { _undoButton, _hintButton })
             {
@@ -548,6 +561,7 @@ namespace ColorShiftKnight.Gameplay
                 _cellButtons[i].interactable = isLegal;
             }
 
+            _levelNumber.text = _game.LevelNumber.ToString();
             GameLocalization.Set(_hud, "Hud", s.Moves, s.MoveLimit);
         }
 

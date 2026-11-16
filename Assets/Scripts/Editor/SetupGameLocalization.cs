@@ -17,7 +17,8 @@ public static class SetupGameLocalization
         EditorApplication.delayCall += () =>
         {
             if (!EditorApplication.isPlayingOrWillChangePlaymode &&
-                !File.Exists("Assets/Localization/GameLocalizationSettings.asset")) Run();
+                (!File.Exists("Assets/Localization/GameLocalizationSettings.asset") ||
+                 LocalizationEditorSettings.GetStringTableCollection("GameUI")?.SharedData.GetEntry("Level") == null)) Run();
         };
     }
 
