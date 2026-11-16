@@ -82,7 +82,12 @@ namespace ColorShiftKnight.Gameplay
             float eased = Mathf.SmoothStep(0f, 1f, _messageProgress);
             // Anchored to the left edge, so the plate is fully offscreen at any aspect ratio.
             _messagePlate.anchoredPosition = new Vector2(Mathf.Lerp(-250f, 230f, eased), 78f);
-            if (_hintDialogue != null) _hintDialogue.PresentOnLeft(eased, _reaction != null ? ((RectTransform)_reaction.transform).rect.height : 758.4f);
+            if (_hintDialogue != null)
+            {
+                RectTransform reactionRect = _reaction != null ? (RectTransform)_reaction.transform : null;
+                _hintDialogue.PresentOnLeft(eased, reactionRect != null ? reactionRect.rect.height : 758.4f,
+                    reactionRect != null ? reactionRect.anchoredPosition : new Vector2(-26f, -40f));
+            }
         }
 
         private void LoadDamageSprites()

@@ -76,7 +76,7 @@ namespace ColorShiftKnight.Gameplay
         }
 
         // Shares the message plate's animation and stays behind it in the canvas.
-        public void PresentOnLeft(float progress, float characterHeight)
+        public void PresentOnLeft(float progress, float characterHeight, Vector2 characterPosition)
         {
             _active = false;
             _firstPlate.SetActive(false);
@@ -100,7 +100,7 @@ namespace ColorShiftKnight.Gameplay
             // Slide in from the left edge, facing toward the board.
             _character.pivot = Vector2.zero;
             _character.localScale = Vector3.one;
-            _character.anchoredPosition = new Vector2(Mathf.Lerp(-width - 30f, 0f, progress), 143f);
+            _character.anchoredPosition = new Vector2(Mathf.Lerp(-width - 30f, characterPosition.x, progress), characterPosition.y);
         }
 
         public void Hide()
