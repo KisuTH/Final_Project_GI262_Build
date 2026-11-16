@@ -24,8 +24,23 @@ namespace ColorShiftKnight.EditorTools
                 return;
             }
 
+            AssignSheet(bootstrap, "DelightedSheet", "Assets/Arts/Desire Fullfilled.png");
+            AssignSheet(bootstrap, "FrustratedSheet", "Assets/Arts/Desired Unfullfilled.png");
             bootstrap.BuildPreview();
             EditorSceneManager.MarkSceneDirty(bootstrap.gameObject.scene);
+        }
+
+        // Fills an empty art slot of the GameplayBootstrap with the picture at the given path.
+        private static void AssignSheet(GameplayBootstrap bootstrap, string fieldName, string path)
+        {
+            SerializedObject so = new SerializedObject(bootstrap);
+            SerializedProperty property = so.FindProperty(fieldName);
+            if (property == null || property.objectReferenceValue != null)
+            {
+                return;
+            }
+            property.objectReferenceValue = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            so.ApplyModifiedProperties();
         }
     }
 }

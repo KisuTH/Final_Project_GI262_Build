@@ -28,6 +28,12 @@ namespace ColorShiftKnight.Gameplay
         private float _time;
         private bool _active;
 
+        // True from the moment the hint starts until she has slid away again.
+        public bool IsActive
+        {
+            get { return _active; }
+        }
+
         public void Build(Sprite[] characterFrames, Sprite firstPlateSprite, Sprite secondPlateSprite, Font font)
         {
             RectTransform self = (RectTransform)transform;
