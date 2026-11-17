@@ -1,0 +1,186 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: GameUI_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: ec3082bf065d99044a28b3868320c6d7, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 1581604864
+    m_Localized: Start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1631936512
+    m_Localized: OPTIONS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130816
+    m_Localized: PAUSE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130817
+    m_Localized: PAUSED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130818
+    m_Localized: RESUME
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130819
+    m_Localized: BACK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130820
+    m_Localized: BACK TO MENU
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130821
+    m_Localized: New Level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130822
+    m_Localized: Undo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130823
+    m_Localized: Hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130824
+    m_Localized: MAIN SOUND
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130825
+    m_Localized: MUSIC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130826
+    m_Localized: EFFECT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130827
+    m_Localized: LANGUAGE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130828
+    m_Localized: "English  /  \u0E44\u0E17\u0E22"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130829
+    m_Localized: 'MOVES    {0}
+
+      LIMIT    {1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130830
+    m_Localized: 'Hint: go to {0}. Minimum {1} moves left.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130831
+    m_Localized: No hint available.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130832
+    m_Localized: New level generated. Reach the Relic, capture the King, then reach
+      Goal.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130833
+    m_Localized: Could not generate a level. Try again.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130834
+    m_Localized: MISSION COMPLETE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130835
+    m_Localized: Finished in {0} moves (limit {1}).
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130836
+    m_Localized: No undo left. Each level allows {0}.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130837
+    m_Localized: Undid one move. {0} undo left.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130838
+    m_Localized: Nothing to undo.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130839
+    m_Localized: Moved.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130840
+    m_Localized: Shadow Relic collected! The board flipped and obstacles were reshuffled.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130841
+    m_Localized: King captured!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130842
+    m_Localized: Goal is locked. Collect the Relic and capture the King first.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130843
+    m_Localized: Mission complete!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130844
+    m_Localized: Move limit reached. Undo or return to the menu.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130845
+    m_Localized: No solvable layout after the Relic, so that move is blocked.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130846
+    m_Localized: That move is not allowed.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 98584238579712
+    m_Localized: LEVEL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788502724608
+    m_Localized: Next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473344
+    m_Localized: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473345
+    m_Localized: Level restarted. Reach the Relic, capture the King, then reach Goal.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473346
+    m_Localized: LEVEL {0} COMPLETE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788544667648
+    m_Localized: MOVE LIMIT REACHED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788544667649
+    m_Localized: Undo a move, or restart this level.
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

@@ -1,0 +1,188 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: GameUI Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: GameUI
+  m_TableCollectionNameGuidString: ec3082bf065d99044a28b3868320c6d7
+  m_Entries:
+  - m_Id: 1581604864
+    m_Key: Start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1631936512
+    m_Key: Options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130816
+    m_Key: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130817
+    m_Key: Paused
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130818
+    m_Key: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130819
+    m_Key: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130820
+    m_Key: BackToMenu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130821
+    m_Key: NewLevel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130822
+    m_Key: Undo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130823
+    m_Key: Hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130824
+    m_Key: MainSound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130825
+    m_Key: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130826
+    m_Key: Effect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130827
+    m_Key: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130828
+    m_Key: LanguageChoice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130829
+    m_Key: Hud
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130830
+    m_Key: HintMessage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130831
+    m_Key: NoHint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130832
+    m_Key: NewLevelMessage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130833
+    m_Key: GenerateFailed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130834
+    m_Key: WinTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130835
+    m_Key: WinBody
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130836
+    m_Key: NoUndo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130837
+    m_Key: UndoMessage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130838
+    m_Key: NothingToUndo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130839
+    m_Key: Moved
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130840
+    m_Key: RelicCollected
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130841
+    m_Key: KingCaptured
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130842
+    m_Key: GoalLocked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130843
+    m_Key: Won
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130844
+    m_Key: Lost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130845
+    m_Key: Rejected
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1636130846
+    m_Key: InvalidMove
+    m_Metadata:
+      m_Items: []
+  - m_Id: 98584238579712
+    m_Key: Level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788502724608
+    m_Key: Next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473344
+    m_Key: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473345
+    m_Key: RestartMessage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788540473346
+    m_Key: LevelComplete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788544667648
+    m_Key: MoveLimitTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106788544667649
+    m_Key: MoveLimitBody
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 1154356739208118368
+  references:
+    version: 2
+    RefIds:
+    - rid: 1154356739208118368
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1794829655433
