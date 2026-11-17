@@ -10,5 +10,6 @@ namespace ColorShiftKnight.Core
         public const int Start = 30; // A6 (bottom-left)
         public const int Goal = 5;   // F1 (top-right)
         public const int MaxUndos = 3; // Undo can be used this many times in one level
+        public const int MaxHints = 3; // Hint can be used this many times in one level
     }
 }

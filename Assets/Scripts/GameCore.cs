@@ -12,7 +12,7 @@ namespace ColorShiftKnight.Core
         public bool IsWon;
         public bool IsLost;
         public int UndosLeft;
-        private LevelState initial;
+        public int HintsLeft;
 
         public GameCore(int seed)
         {
@@ -33,11 +33,11 @@ namespace ColorShiftKnight.Core
             }
 
             State = state;
-            initial = state.Clone();
             history.Clear();
             IsWon = false;
             IsLost = false;
             UndosLeft = BoardConfig.MaxUndos;
+            HintsLeft = BoardConfig.MaxHints;
             return true;
         }
 
@@ -120,18 +120,15 @@ namespace ColorShiftKnight.Core
             return true;
         }
 
-        // Puts the current level back to its starting position (same board, same Move Limit).
-        public void Restart()
+        // Counts one hint as used. Returns false when all the hints of this level are already used.
+        public bool UseHint()
         {
-            if (initial == null)
+            if (HintsLeft <= 0)
             {
-                return;
+                return false;
             }
-            State = initial.Clone();
-            history.Clear();
-            IsWon = false;
-            IsLost = false;
-            UndosLeft = BoardConfig.MaxUndos;
+            HintsLeft--;
+            return true;
         }
 
         // Returns null when there is no hint.

@@ -348,14 +348,10 @@ namespace ColorShiftKnight.Gameplay
             NewLevel();
         }
 
-        // Button of the move-limit pop-up: puts the same level back to its start.
+        // Button of the move-limit pop-up: a completely new map, but the level number stays the same.
         private void OnRestartClicked()
         {
-            _overlay.SetActive(false);
-            _hintDialogue.Hide();
-            _game.Restart();
-            _message.text = "Level restarted. Reach the Relic, capture the King, then reach Goal.";
-            Refresh();
+            NewLevel();
         }
 
         // All 36 squares call this method. The clicked square is the one the EventSystem has selected.
@@ -410,10 +406,18 @@ namespace ColorShiftKnight.Gameplay
 
         private void OnHint()
         {
+            _hintDialogue.Hide();
+            if (_game.HintsLeft <= 0)
+            {
+                _message.text = "No hint left. Each level allows " + BoardConfig.MaxHints + ".";
+                Refresh();
+                return;
+            }
             HintResult hint = _game.GetHint();
             if (hint != null)
             {
-                _message.text = "Hint: go to " + Position.NameOf(hint.NextSquare) + ". Minimum " + hint.RemainingMinMoves + " moves left.";
+                _game.UseHint();
+                _message.text = "Hint: go to " + Position.NameOf(hint.NextSquare) + ". Minimum " + hint.RemainingMinMoves + " moves left. " + _game.HintsLeft + " hint left.";
                 _hintDialogue.Show("Psst... try " + Position.NameOf(hint.NextSquare) + ".",
                                    "That is the shortest way. " + hint.RemainingMinMoves + " moves left at the least.");
             }
