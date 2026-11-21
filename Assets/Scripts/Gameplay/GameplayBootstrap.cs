@@ -97,9 +97,14 @@ namespace ColorShiftKnight.Gameplay
             if (_damageSprites.Length != 4) _damageSprites = null;
         }
 
-        private void RefreshButton(Button button, int uses)
+        private void RefreshButton(Button button, int uses, int maxUses)
         {
-            int stage = Mathf.Clamp(uses, 0, 3);
+            // The stone has 4 pictures (0-3). Spread the uses over them; the last picture means no uses left.
+            int stage = 3;
+            if (uses < maxUses)
+            {
+                stage = uses * 3 / maxUses;
+            }
             if (_damageSprites != null)
             {
                 UnityEngine.UI.Image image = button.GetComponent<UnityEngine.UI.Image>();
@@ -404,7 +409,7 @@ namespace ColorShiftKnight.Gameplay
         {
             _overlay.SetActive(false);
             _hintDialogue.Hide();
-            if (_game.StartNewLevel())
+            if (_game.StartNewLevel(_levelNumber))
             {
                 _messageVisible = false;
                 _messageProgress = 0f;
@@ -524,8 +529,8 @@ namespace ColorShiftKnight.Gameplay
 
         private void Refresh()
         {
-            RefreshButton(_undoButton, BoardConfig.MaxUndos - _game.UndosLeft);
-            RefreshButton(_hintButton, BoardConfig.MaxHints - _game.HintsLeft);
+            RefreshButton(_undoButton, BoardConfig.MaxUndos - _game.UndosLeft, BoardConfig.MaxUndos);
+            RefreshButton(_hintButton, _game.MaxHints - _game.HintsLeft, _game.MaxHints);
             LevelState s = _game.State;
             if (s == null)
             {

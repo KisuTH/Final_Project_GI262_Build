@@ -13,6 +13,7 @@ namespace ColorShiftKnight.Core
         public bool IsLost;
         public int UndosLeft;
         public int HintsLeft;
+        public int MaxHints;
 
         public GameCore(int seed)
         {
@@ -24,7 +25,7 @@ namespace ColorShiftKnight.Core
             return IsWon || IsLost;
         }
 
-        public bool StartNewLevel()
+        public bool StartNewLevel(int levelNumber)
         {
             LevelState state = LevelGenerator.CreateInitial(rng);
             if (state == null)
@@ -37,7 +38,8 @@ namespace ColorShiftKnight.Core
             IsWon = false;
             IsLost = false;
             UndosLeft = BoardConfig.MaxUndos;
-            HintsLeft = BoardConfig.MaxHints;
+            MaxHints = BoardConfig.HintsForLevel(levelNumber);
+            HintsLeft = MaxHints;
             return true;
         }
 
